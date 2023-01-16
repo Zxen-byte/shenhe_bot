@@ -23,7 +23,7 @@ from apps.genshin.custom_model import (AbyssHalf, AbyssResult, AreaResult,
 from apps.genshin.genshin_app import GenshinApp
 from apps.genshin.leaderboard import update_user_abyss_leaderboard
 from apps.genshin.utils import (get_character_emoji, get_enka_data,
-                                get_farm_data, get_uid, get_uid_region_hash,
+                                get_farm_data, get_shenhe_account, get_uid, get_uid_region_hash,
                                 get_uid_tz)
 from apps.genshin.wiki import (parse_artifact_wiki, parse_book_wiki,
                                parse_character_wiki, parse_food_wiki,
@@ -1113,7 +1113,13 @@ class GenshinCog(commands.Cog, name="genshin"):
             return text
         else:
             return self.card_i18n[locale][text]
-
+    
+    @check_cookie()
+    @app_commands.command(name="hoyo-character", description=_("Get character info from Hoyolab", hash=133))
+    async def slash_hoyo_character(self, i: Interaction):
+        locale = await get_user_locale(i.user.id, i.client.pool) or i.locale
+        shenhe_account = await get_shenhe_account(i.user.id, self.bot, locale)
+        characters = await shenhe_account.client.get_genshin_characters(shenhe_account.uid)
 
 async def setup(bot: commands.AutoShardedBot) -> None:
     await bot.add_cog(GenshinCog(bot))
