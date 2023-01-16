@@ -588,7 +588,7 @@ class GenshinApp:
             )
             embeds.append(embed)
         return embeds
-
+    
     async def get_user_uid(self, user_id: int) -> int | None:
         uid = await get_uid(user_id, self.bot.pool)
         return uid
